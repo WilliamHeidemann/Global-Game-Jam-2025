@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
@@ -7,16 +8,18 @@ using UnityUtils;
 
 public class ClawMachine : MonoBehaviour
 {
-    [SerializeField] private Transform[] _hinges;
     private Quaternion[] _initialRotations;
     private Quaternion[] _targetRotations;
     
     [SerializeField] private Rigidbody _clawMachine;
     [SerializeField] private ClawTrigger _clawTrigger;
-    private float _initialPipePosition;
-    private float _targetPipePosition;
-    private bool hasReachedTop => Mathf.Abs(_clawMachine.position.y - _initialPipePosition) < 0.1f;
-    private bool hasReachedBottom => Mathf.Abs(_clawMachine.position.y - _targetPipePosition) < 0.1f;
+    private float _initialDepth;
+    private float _targetDepth;
+    private bool hasReachedTop => Mathf.Abs(_clawMachine.transform.localPosition.y - _initialDepth) < 0.1f;
+    private bool hasReachedBottom => Mathf.Abs(_clawMachine.position.y - _targetDepth) < 0.1f;
+
+    private bool _isGrabbing;
+    
     private InputAction _moveInputAction;
     private InputAction _interactInputAction;
 
@@ -26,25 +29,22 @@ public class ClawMachine : MonoBehaviour
 
     public AudioSource soundEffectSource;
 
+    
+    [SerializeField] private Transform _pistonBone;
+    [SerializeField] private Transform _clawFingersStart;
+    [SerializeField] private Transform _clawFingersEnd;
+    
     private void Start()
     {
-        _initialRotations = new Quaternion[_hinges.Length];
-        for (int i = 0; i < _hinges.Length; i++)
-        {
-            _initialRotations[i] = _hinges[i].rotation;
-        }
-
-        _targetRotations = new Quaternion[_hinges.Length];
-        for (int i = 0; i < _hinges.Length; i++)
-        {
-            _targetRotations[i] = _initialRotations[i] * Quaternion.Euler(_pressure, 0, 0);
-        }
-
-        _initialPipePosition = _clawMachine.position.y;
-        _targetPipePosition = _initialPipePosition - _dropDepth;
+        _initialDepth = _clawMachine.transform.localPosition.y;
+        _targetDepth = _initialDepth - _dropDepth;
+        
+        print($"Initial depth: {_initialDepth}, Target depth: {_targetDepth}");
 
         _moveInputAction = InputSystem.actions.FindAction("Move");
         _interactInputAction = InputSystem.actions.FindAction("Jump");
+        
+        Release();
     }
 
     private void Update()
@@ -56,7 +56,7 @@ public class ClawMachine : MonoBehaviour
 
         if (_interactInputAction.triggered && hasReachedTop)
         {
-            if (_clawTrigger.hasBubbles)
+            if (_isGrabbing)
             {
                 Release();
             }
@@ -96,8 +96,10 @@ public class ClawMachine : MonoBehaviour
     {
         while (!hasReachedBottom && !_clawTrigger.hasBubbles)
         {
+            print(_clawMachine.position.y);
+            print($"Target position y: {_targetDepth}");
             Vector3 currentPosition = _clawMachine.position;
-            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _targetPipePosition),
+            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _targetDepth),
                 Time.deltaTime);
             await Awaitable.NextFrameAsync();
         }
@@ -118,7 +120,7 @@ public class ClawMachine : MonoBehaviour
         while (!hasReachedTop)
         {
             Vector3 currentPosition = _clawMachine.position;
-            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _initialPipePosition),
+            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _initialDepth),
                 Time.deltaTime);
             await Awaitable.NextFrameAsync();
         }
@@ -130,40 +132,17 @@ public class ClawMachine : MonoBehaviour
         }
     }
 
-    public async void Release()
+    public void Grab()
     {
-        while (!IsNotGrabbing())
-        {
-            for (var i = 0; i < _hinges.Length; i++)
-            {
-                _hinges[i].rotation = Quaternion.RotateTowards(_hinges[i].rotation, _initialRotations[i], 1f);
-            }
-
-            await Awaitable.NextFrameAsync();
-        }
-        
-        bool IsNotGrabbing()
-        {
-            var angle = Quaternion.Angle(_hinges[0].rotation, _initialRotations[0]);
-            return angle < 1f;
-        }
+        _isGrabbing = true;
+        _pistonBone.position = _clawFingersEnd.position;
+        _pistonBone.DOMove(_clawFingersStart.position, .5f).SetEase(Ease.OutBounce);
     }
 
-    public async void Grab()
+    public void Release()
     {
-        while (!IsGrabbing())
-        {
-            for (var i = 0; i < _hinges.Length; i++)
-            {
-                _hinges[i].rotation = Quaternion.RotateTowards(_hinges[i].rotation, _targetRotations[i], .3f);
-            }
-
-            await Awaitable.NextFrameAsync();
-        }
-        bool IsGrabbing()
-        {
-            var angle = Quaternion.Angle(_hinges[0].rotation, _targetRotations[0]);
-            return angle < 1f;
-        }
+        _isGrabbing = false;
+        _pistonBone.position = _clawFingersStart.position;
+        _pistonBone.DOMove(_clawFingersEnd.position, .5f).SetEase(Ease.OutBounce);
     }
 }
