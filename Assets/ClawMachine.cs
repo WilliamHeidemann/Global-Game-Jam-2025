@@ -39,8 +39,6 @@ public class ClawMachine : MonoBehaviour
         _initialDepth = _clawMachine.transform.localPosition.y;
         _targetDepth = _initialDepth - _dropDepth;
         
-        print($"Initial depth: {_initialDepth}, Target depth: {_targetDepth}");
-
         _moveInputAction = InputSystem.actions.FindAction("Move");
         _interactInputAction = InputSystem.actions.FindAction("Jump");
         
@@ -96,8 +94,6 @@ public class ClawMachine : MonoBehaviour
     {
         while (!hasReachedBottom && !_clawTrigger.hasBubbles)
         {
-            print(_clawMachine.position.y);
-            print($"Target position y: {_targetDepth}");
             Vector3 currentPosition = _clawMachine.position;
             _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _targetDepth),
                 Time.deltaTime);
