@@ -23,7 +23,9 @@ public class ClawMachine : MonoBehaviour
     [SerializeField] private float _translationSpeed;
     [SerializeField] private float _dropDepth;
     [SerializeField] private float _pressure;
-    
+
+    public AudioSource soundEffectSource;
+
     private void Start()
     {
         _initialRotations = new Quaternion[_hinges.Length];
@@ -70,6 +72,24 @@ public class ClawMachine : MonoBehaviour
         var value = _moveInputAction.ReadValue<Vector2>();
         Vector3 translation = new Vector3(value.x, 0, value.y) * (Time.deltaTime * _translationSpeed);
         _clawMachine.position += translation;
+
+        if(Mathf.Abs(translation.x) != 0.0f && !soundEffectSource.isPlaying)
+        {
+            Debug.Log("Played effect 0");
+            SoundManager.instance.PlaySoundEffect(0);
+        } 
+        else if (Mathf.Abs(translation.z) != 0.0f && !soundEffectSource.isPlaying)
+        {
+            Debug.Log("Played effect 1");
+            SoundManager.instance.PlaySoundEffect(1);
+        }
+
+        bool isMoving = Mathf.Abs(translation.x) > 0.0f || Mathf.Abs(translation.z) > 0.0f;
+        if (!isMoving && soundEffectSource.isPlaying)
+        {
+            Debug.Log("Stopping");
+            soundEffectSource.Stop();
+        }
     }
 
     private async void LowerClaw()
