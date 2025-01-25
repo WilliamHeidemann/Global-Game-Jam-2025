@@ -467,6 +467,32 @@ AudioSource:
   m_CorrespondingSourceObject: {fileID: 662369823459623860, guid: 8a5b43d6f44a19e40b9258bfdb404e1d, type: 3}
   m_PrefabInstance: {fileID: 1558841907}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &782522757 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 116902902638061589, guid: 3e335476068404e47885058de8c84762, type: 3}
+  m_PrefabInstance: {fileID: 1682631337}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &782522761
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 782522757}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.1673119, y: 0.5430665, z: 0.9954186}
+  m_Center: {x: -0.5658678, y: -0.73763037, z: 0.0019797545}
 --- !u!1 &813904086
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,7 +542,7 @@ MonoBehaviour:
   _clawMachine: {fileID: 1681019978}
   _clawTrigger: {fileID: 173166872}
   _translationSpeed: 1.2
-  _dropDepth: 3
+  _dropDepth: 0.9
   _pressure: 22
   soundEffectSource: {fileID: 708889904}
   _pistonBone: {fileID: 4798052049220211711}
@@ -1145,7 +1171,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 116902902638061589, guid: 3e335476068404e47885058de8c84762, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 782522761}
   m_SourcePrefab: {fileID: 100100000, guid: 3e335476068404e47885058de8c84762, type: 3}
 --- !u!1 &1861921643
 GameObject:

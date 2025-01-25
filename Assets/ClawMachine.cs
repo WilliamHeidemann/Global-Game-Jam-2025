@@ -15,9 +15,8 @@ public class ClawMachine : MonoBehaviour
     [SerializeField] private ClawTrigger _clawTrigger;
     private float _initialDepth;
     private float _targetDepth;
-    private bool hasReachedTop => Mathf.Abs(_clawMachine.transform.localPosition.y - _initialDepth) < 0.1f;
-    private bool hasReachedBottom => Mathf.Abs(_clawMachine.position.y - _targetDepth) < 0.1f;
 
+    private bool _isAtTop = true;
     private bool _isGrabbing;
     
     private InputAction _moveInputAction;
@@ -36,7 +35,7 @@ public class ClawMachine : MonoBehaviour
     
     private void Start()
     {
-        _initialDepth = _clawMachine.transform.localPosition.y;
+        _initialDepth = _clawMachine.position.y;
         _targetDepth = _initialDepth - _dropDepth;
         
         _moveInputAction = InputSystem.actions.FindAction("Move");
@@ -47,12 +46,12 @@ public class ClawMachine : MonoBehaviour
 
     private void Update()
     {
-        if (hasReachedTop)
+        if (_isAtTop)
         {
             TranslateClaw();
         }
 
-        if (_interactInputAction.triggered && hasReachedTop)
+        if (_interactInputAction.triggered && _isAtTop)
         {
             if (_isGrabbing)
             {
@@ -90,42 +89,36 @@ public class ClawMachine : MonoBehaviour
         }
     }
 
-    private async void LowerClaw()
+    private void LowerClaw()
     {
-        while (!hasReachedBottom && !_clawTrigger.hasBubbles)
-        {
-            Vector3 currentPosition = _clawMachine.position;
-            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _targetDepth),
-                Time.deltaTime);
-            await Awaitable.NextFrameAsync();
-        }
-
-
-        await Awaitable.WaitForSecondsAsync(.5f);
-        if (!_clawTrigger.hasBubbles)
-        {
-            Grab();
-        }
-
-        await Awaitable.WaitForSecondsAsync(1f);
-        RaiseClaw();
+        _isAtTop = false;
+        _clawMachine.position = _clawMachine.position.With(y: _initialDepth);
+        _clawMachine.DOMoveY(_targetDepth, 1f)
+            .OnComplete(async () =>
+            {
+                await Awaitable.WaitForSecondsAsync(.5f);
+                if (!_clawTrigger.hasBubbles)
+                {
+                    Grab();
+                }
+                await Awaitable.WaitForSecondsAsync(1f);
+                RaiseClaw();
+            });
     }
 
-    private async void RaiseClaw()
+    private void RaiseClaw()
     {
-        while (!hasReachedTop)
-        {
-            Vector3 currentPosition = _clawMachine.position;
-            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _initialDepth),
-                Time.deltaTime);
-            await Awaitable.NextFrameAsync();
-        }
-
-        if (!_clawTrigger.hasBubbles)
-        {
-            await Awaitable.WaitForSecondsAsync(.5f);
-            Release();
-        }
+        _clawMachine.position = _clawMachine.position.With(y: _targetDepth);
+        _clawMachine.DOMoveY(_initialDepth, 1f)
+            .OnComplete(async () =>
+            {
+                if (!_clawTrigger.hasBubbles)
+                {
+                    await Awaitable.WaitForSecondsAsync(.5f);
+                    Release();
+                }
+                _isAtTop = true;
+            });
     }
 
     public void Grab()
