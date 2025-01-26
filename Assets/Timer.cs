@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UtilityToolkit.Runtime;
 
 public class Timer : MonoBehaviour
@@ -10,6 +11,8 @@ public class Timer : MonoBehaviour
     private Material _material;
     [SerializeField] private float _time;
     private bool _hasStarted;
+
+    public UnityEvent OnTimerEnd;
     
     private void Awake()
     {
@@ -27,10 +30,17 @@ public class Timer : MonoBehaviour
     {
         if (!_hasStarted) return;
         float fraction = 1f - _timer.FractionDone;
-        if (fraction < 0f) return;
-        transform.localScale = new Vector3(transform.localScale.x, fraction / _initialScale, transform.localScale.z);
-        Color color = _gradient.Evaluate(fraction);
-        _material.SetColor("_EmissionColor", color);
+        if (fraction > 0f)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, fraction / _initialScale, transform.localScale.z);
+            Color color = _gradient.Evaluate(fraction);
+            _material.SetColor("_EmissionColor", color);
+        }
+        else
+        {
+            _hasStarted = false;
+            OnTimerEnd?.Invoke();
+        }
     }
 
     public void AddTime(float secondsToAdd)

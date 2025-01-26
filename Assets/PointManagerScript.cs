@@ -9,6 +9,8 @@ public class PointManagerScript : MonoBehaviour
     public TextMeshPro scoreText;
     private Timer _timer;
 
+    [SerializeField] private TextMeshProUGUI _finalScoreText;
+    
     private void Awake()
     {
         _timer = FindFirstObjectByType<Timer>();
@@ -32,19 +34,7 @@ public class PointManagerScript : MonoBehaviour
         {
             _timer.AddTime(5);
             SoundManager.instance.PlaySoundEffect(3);
-            switch (bubble)
-            {
-                case BubbleTypeEnum.Yellow:
-                case BubbleTypeEnum.Green:
-                    AddPoints(10);
-                    break;
-                case BubbleTypeEnum.Purple:
-                case BubbleTypeEnum.Orange:
-                    AddPoints(15);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            AddPoints(10);
         }
         else
         {
@@ -57,5 +47,10 @@ public class PointManagerScript : MonoBehaviour
     {
         points += amount;
         scoreText.text = "Score: " + points.ToString();
+    }
+
+    public void SetPointFinalText()
+    {
+        _finalScoreText.text = "Score: " + points.ToString();
     }
 }

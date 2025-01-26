@@ -86,7 +86,7 @@ public class ClawMachine : MonoBehaviour
         }
         else if (Mathf.Abs(translation.z) != 0.0f && !soundEffectSource.isPlaying)
         {
-            SoundManager.instance.PlayClawMovementSound(1);
+            SoundManager.instance.PlayClawMovementSound(0);
         }
 
         bool isMoving = Mathf.Abs(translation.x) > 0.0f || Mathf.Abs(translation.z) > 0.0f;

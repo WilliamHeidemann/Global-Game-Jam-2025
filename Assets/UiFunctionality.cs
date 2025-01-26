@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class UiFunctionality : MonoBehaviour
 {
@@ -17,5 +18,10 @@ public class UiFunctionality : MonoBehaviour
         {
             _onPause?.Invoke();
         }
+    }
+
+    public void TryAgain()
+    {
+        SceneManager.LoadScene(0);
     }
 }
