@@ -2925,6 +2925,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _type: 0
   _isTrashHole: 0
+--- !u!1 &1821638285 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6643977599829004836, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
+  m_PrefabInstance: {fileID: 6297638038525412427}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1821638288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1821638285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 036c376c21ec419418c542e5b02244aa, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1837545725
 GameObject:
   m_ObjectHideFlags: 0
@@ -3327,6 +3362,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Point1: {fileID: 1658997565}
   Point2: {fileID: 179477948}
+--- !u!1 &1971968095 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6643977599829004836, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
+  m_PrefabInstance: {fileID: 2052066780}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1971968098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971968095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 036c376c21ec419418c542e5b02244aa, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1987174221
 GameObject:
   m_ObjectHideFlags: 0
@@ -3687,9 +3757,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8440404677430269644, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6643977599829004836, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1971968098}
   m_SourcePrefab: {fileID: 100100000, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
 --- !u!1 &2052066781 stripped
 GameObject:
@@ -5601,9 +5675,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8440404677430269644, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6643977599829004836, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1821638288}
   m_SourcePrefab: {fileID: 100100000, guid: b8ad561a2fcf0704caf9780554160d5a, type: 3}
 --- !u!33 &6302336142314253171
 MeshFilter:
