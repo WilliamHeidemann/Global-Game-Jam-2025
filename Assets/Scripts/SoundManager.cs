@@ -37,6 +37,7 @@ public class SoundManager : MonoBehaviour
     {
         if (soundIndex >= 0 && soundIndex < soundEffects.Length)
         {
+            soundEffectSource.pitch = Random.Range(0.6f, 0.8f);
             soundEffectSource.PlayOneShot(soundEffects[soundIndex]);
         }
     }
