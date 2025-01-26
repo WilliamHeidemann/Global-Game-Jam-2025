@@ -4,20 +4,14 @@ using static PointManagerScript;
 
 public class GoalScript : MonoBehaviour
 {
-    private PointManagerScript pointManager;
-    private PointTracker _pointsTracker;
-
-    void Start()
-    {
-        _pointsTracker = new PointTracker();
-    }
+    public PointManagerScript pointManager;
 
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Bubble"))
         {
             Debug.Log("Goal!!");
-            _pointsTracker.AddPoints(1);
+            pointManager.AddPoints(1);
         }
     }
 }

@@ -315,7 +315,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.95, y: 0.1, z: 0.95}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.79, z: 0}
 --- !u!114 &259492408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,6 +328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eed7ce89010a00428b2f62f6c42360c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pointManager: {fileID: 1799508926}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -880,8 +881,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Score:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 3ba07f7b25cad534989e5b2373baf3dc, type: 2}
+  m_sharedMaterial: {fileID: -1325204661326186748, guid: 3ba07f7b25cad534989e5b2373baf3dc, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -975,7 +976,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -1325204661326186748, guid: 3ba07f7b25cad534989e5b2373baf3dc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1404,7 +1405,7 @@ GameObject:
   - component: {fileID: 1799508925}
   - component: {fileID: 1799508926}
   m_Layer: 0
-  m_Name: PointManager
+  m_Name: ScoreManagerObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1419,7 +1420,7 @@ Transform:
   m_GameObject: {fileID: 1799508923}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -0.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1439,6 +1440,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f13ae7cc2ab076419731ed79c6c5b70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  points: 0
+  scoreText: {fileID: 1438781609}
 --- !u!1 &1861921643
 GameObject:
   m_ObjectHideFlags: 0
