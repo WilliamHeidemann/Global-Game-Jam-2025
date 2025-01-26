@@ -1,17 +1,24 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using static PointManagerScript;
 
 public class GoalScript : MonoBehaviour
 {
-    public PointManagerScript pointManager;
+    private PointManagerScript _pointManager;
+    [SerializeField] private BubbleTypeEnum _type;
+    [SerializeField] private bool _isTrashHole;
+
+    private void Awake()
+    {
+        _pointManager = FindFirstObjectByType<PointManagerScript>();
+    }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Bubble"))
+        if (other.TryGetComponent(out BubbleType bubbleType))
         {
-            Debug.Log("Goal!!");
-            pointManager.AddPoints(1);
+            _pointManager.CalculateScore(bubbleType.Type, _type, _isTrashHole);
         }
     }
 }

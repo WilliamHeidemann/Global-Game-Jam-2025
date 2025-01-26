@@ -1,9 +1,10 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class UiFunctionality : MonoBehaviour
 {
-    [SerializeField] private GameObject _pauseMenu;
+    [SerializeField] private UnityEvent _onPause;
     
     public void Quit()
     {
@@ -14,12 +15,7 @@ public class UiFunctionality : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            TogglePauseMenu();
+            _onPause?.Invoke();
         }
-    }
-
-    public void TogglePauseMenu()
-    {
-        _pauseMenu.SetActive(!_pauseMenu.activeSelf);
     }
 }
