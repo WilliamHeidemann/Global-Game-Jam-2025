@@ -12,6 +12,14 @@ public class ClawTrigger : MonoBehaviour
     [CanBeNull] private Rigidbody _lastBubble;
     public bool hasBubbles => _bubble.IsSome(out _);
 
+    private void Update()
+    {
+        if (_bubble.IsSome(out var bubble))
+        {
+            bubble.position = transform.position;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (hasBubbles)
@@ -28,7 +36,6 @@ public class ClawTrigger : MonoBehaviour
 
             rigidBody.GetComponent<SphereCollider>().isTrigger = true;
             rigidBody.isKinematic = true;
-            rigidBody.transform.parent = transform;
             rigidBody.transform.position = transform.position;
             _bubble = Option<Rigidbody>.Some(rigidBody);
             _clawMachine.Grab();
@@ -55,7 +62,6 @@ public class ClawTrigger : MonoBehaviour
         }
 
         bubble.GetComponent<SphereCollider>().isTrigger = false;
-        bubble.transform.parent = null;
         bubble.isKinematic = false;
         _bubble = Option<Rigidbody>.None;
         _lastBubble = bubble;
