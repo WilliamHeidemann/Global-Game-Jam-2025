@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using UnityUtils;
@@ -10,15 +11,15 @@ public class ClawMachine : MonoBehaviour
 {
     private Quaternion[] _initialRotations;
     private Quaternion[] _targetRotations;
-    
+
     [SerializeField] private Rigidbody _clawMachine;
     [SerializeField] private ClawTrigger _clawTrigger;
-    private float _initialDepth;
-    private float _targetDepth;
+    private float _initialY;
+    private float _targetY;
 
     private bool _isAtTop = true;
     private bool _isGrabbing;
-    
+
     private InputAction _moveInputAction;
     private InputAction _interactInputAction;
 
@@ -28,39 +29,48 @@ public class ClawMachine : MonoBehaviour
 
     public AudioSource soundEffectSource;
 
-    
+
     [SerializeField] private Transform _pistonBone;
     [SerializeField] private Transform _clawFingersStart;
     [SerializeField] private Transform _clawFingersEnd;
-    
+
+    [SerializeField] private Rig _clawRig;
+
     private void Start()
     {
-        _initialDepth = _clawMachine.position.y;
-        _targetDepth = _initialDepth - _dropDepth;
-        
+        _initialY = _clawMachine.position.y;
+        _targetY = _initialY - _dropDepth;
+
         _moveInputAction = InputSystem.actions.FindAction("Move");
         _interactInputAction = InputSystem.actions.FindAction("Jump");
-        
-        Release();
+
+        // Release();
+
+        _pistonBone.DOMoveY(_clawFingersEnd.position.y, .5f).SetEase(Ease.OutBounce);
     }
 
     private void Update()
     {
-        if (_isAtTop)
+        print(_isGrabbing);
+        if (!_isAtTop)
         {
-            TranslateClaw();
+            return;
         }
+        
+        TranslateClaw();
 
-        if (_interactInputAction.triggered && _isAtTop)
+        if (!_interactInputAction.triggered)
         {
-            if (_isGrabbing)
-            {
-                Release();
-            }
-            else
-            {
-                LowerClaw();
-            }
+            return;
+        }
+        
+        if (_isGrabbing)
+        {
+            Release();
+        }
+        else
+        {
+            LowerClaw();
         }
     }
 
@@ -70,11 +80,11 @@ public class ClawMachine : MonoBehaviour
         Vector3 translation = new Vector3(value.x, 0, value.y) * (Time.deltaTime * _translationSpeed);
         _clawMachine.position += translation;
 
-        if(Mathf.Abs(translation.x) != 0.0f && !soundEffectSource.isPlaying)
+        if (Mathf.Abs(translation.x) != 0.0f && !soundEffectSource.isPlaying)
         {
             Debug.Log("Played effect 0");
             SoundManager.instance.PlaySoundEffect(0);
-        } 
+        }
         else if (Mathf.Abs(translation.z) != 0.0f && !soundEffectSource.isPlaying)
         {
             Debug.Log("Played effect 1");
@@ -92,8 +102,8 @@ public class ClawMachine : MonoBehaviour
     private void LowerClaw()
     {
         _isAtTop = false;
-        _clawMachine.position = _clawMachine.position.With(y: _initialDepth);
-        _clawMachine.DOMoveY(_targetDepth, 1f)
+        _clawMachine.position = _clawMachine.position.With(y: _initialY);
+        _clawMachine.DOMoveY(_targetY, 1f)
             .OnComplete(async () =>
             {
                 await Awaitable.WaitForSecondsAsync(.5f);
@@ -101,15 +111,17 @@ public class ClawMachine : MonoBehaviour
                 {
                     Grab();
                 }
-                await Awaitable.WaitForSecondsAsync(1f);
-                RaiseClaw();
+                else
+                {
+                    RaiseClaw();
+                }
             });
     }
 
     private void RaiseClaw()
     {
-        _clawMachine.position = _clawMachine.position.With(y: _targetDepth);
-        _clawMachine.DOMoveY(_initialDepth, 1f)
+        _clawMachine.position = _clawMachine.position.With(y: _targetY);
+        _clawMachine.DOMoveY(_initialY, 1f)
             .OnComplete(async () =>
             {
                 if (!_clawTrigger.hasBubbles)
@@ -117,21 +129,45 @@ public class ClawMachine : MonoBehaviour
                     await Awaitable.WaitForSecondsAsync(.5f);
                     Release();
                 }
-                _isAtTop = true;
+                else
+                {
+                    _isAtTop = true;
+                }
             });
     }
 
     public void Grab()
     {
         _isGrabbing = true;
-        _pistonBone.position = _clawFingersEnd.position;
-        _pistonBone.DOMove(_clawFingersStart.position, .5f).SetEase(Ease.OutBounce);
+        // _pistonBone.position = _clawFingersEnd.position;
+        _pistonBone.DOMoveY(_clawFingersStart.position.y, .5f)
+            .SetEase(Ease.OutBounce);
+        // .OnComplete(RaiseClaw);
+        _clawRig.weight = 1f;
+        DOTween.To(() => _clawRig.weight, x => _clawRig.weight = x, 0f, 1f)
+            .SetEase(Ease.OutBounce)
+            .OnComplete(RaiseClaw);
     }
 
     public void Release()
     {
-        _isGrabbing = false;
-        _pistonBone.position = _clawFingersStart.position;
-        _pistonBone.DOMove(_clawFingersEnd.position, .5f).SetEase(Ease.OutBounce);
+        // _pistonBone.position = _clawFingersStart.position;
+        // _clawTrigger.ReleaseBubble();
+        _pistonBone.DOMoveY(_clawFingersEnd.position.y, .5f).SetEase(Ease.OutBounce);
+            // .OnComplete(() =>
+            // {
+            //     _isAtTop = true;
+            //     _isGrabbing = false;
+            // });
+
+        _clawRig.weight = 0f;
+        _clawTrigger.ReleaseBubble();
+        DOTween.To(() => _clawRig.weight, x => _clawRig.weight = x, 1f, 1f)
+            .SetEase(Ease.OutBounce)
+            .OnComplete(() =>
+            {
+                _isAtTop = true;
+                _isGrabbing = false;
+            });
     }
 }
