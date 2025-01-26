@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
 using UnityUtils;
@@ -10,16 +11,15 @@ public class ClawMachine : MonoBehaviour
 {
     private Quaternion[] _initialRotations;
     private Quaternion[] _targetRotations;
-    
+
     [SerializeField] private Rigidbody _clawMachine;
     [SerializeField] private ClawTrigger _clawTrigger;
-    private float _initialDepth;
-    private float _targetDepth;
-    private bool hasReachedTop => Mathf.Abs(_clawMachine.transform.localPosition.y - _initialDepth) < 0.1f;
-    private bool hasReachedBottom => Mathf.Abs(_clawMachine.position.y - _targetDepth) < 0.1f;
+    private float _initialY;
+    private float _targetY;
 
+    private bool _isAtTop = true;
     private bool _isGrabbing;
-    
+
     private InputAction _moveInputAction;
     private InputAction _interactInputAction;
 
@@ -29,39 +29,45 @@ public class ClawMachine : MonoBehaviour
 
     public AudioSource soundEffectSource;
 
-    
+
     [SerializeField] private Transform _pistonBone;
     [SerializeField] private Transform _clawFingersStart;
     [SerializeField] private Transform _clawFingersEnd;
-    
+
+    [SerializeField] private Rig _clawRig;
+
     private void Start()
     {
-        _initialDepth = _clawMachine.transform.localPosition.y;
-        _targetDepth = _initialDepth - _dropDepth;
-        
+        _initialY = _clawMachine.position.y;
+        _targetY = _initialY - _dropDepth;
+
         _moveInputAction = InputSystem.actions.FindAction("Move");
         _interactInputAction = InputSystem.actions.FindAction("Jump");
-        
-        Release();
+
+        _pistonBone.DOMoveY(_clawFingersEnd.position.y, .5f).SetEase(Ease.OutBounce);
     }
 
     private void Update()
     {
-        if (hasReachedTop)
+        if (!_isAtTop)
         {
-            TranslateClaw();
+            return;
         }
+        
+        TranslateClaw();
 
-        if (_interactInputAction.triggered && hasReachedTop)
+        if (!_interactInputAction.triggered)
         {
-            if (_isGrabbing)
-            {
-                Release();
-            }
-            else
-            {
-                LowerClaw();
-            }
+            return;
+        }
+        
+        if (_isGrabbing)
+        {
+            Release();
+        }
+        else
+        {
+            LowerClaw();
         }
     }
 
@@ -70,11 +76,14 @@ public class ClawMachine : MonoBehaviour
         var value = _moveInputAction.ReadValue<Vector2>();
         Vector3 translation = new Vector3(value.x, 0, value.y) * (Time.deltaTime * _translationSpeed);
         _clawMachine.position += translation;
+        
+        _clawMachine.position = _clawMachine.position.With(x: Mathf.Clamp(_clawMachine.position.x, -1, 1), z: Mathf.Clamp(_clawMachine.position.z, 0.36f, 1.06f));
+        
 
-        if(Mathf.Abs(translation.x) != 0.0f && !soundEffectSource.isPlaying)
+        if (Mathf.Abs(translation.x) != 0.0f && !soundEffectSource.isPlaying)
         {
             SoundManager.instance.PlaySoundEffect(0);
-        } 
+        }
         else if (Mathf.Abs(translation.z) != 0.0f && !soundEffectSource.isPlaying)
         {
             SoundManager.instance.PlaySoundEffect(1);
@@ -87,55 +96,65 @@ public class ClawMachine : MonoBehaviour
         }
     }
 
-    private async void LowerClaw()
+    private void LowerClaw()
     {
-        while (!hasReachedBottom && !_clawTrigger.hasBubbles)
-        {
-            Vector3 currentPosition = _clawMachine.position;
-            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _targetDepth),
-                Time.deltaTime);
-            await Awaitable.NextFrameAsync();
-        }
-
-
-        await Awaitable.WaitForSecondsAsync(.5f);
-        if (!_clawTrigger.hasBubbles)
-        {
-            Grab();
-        }
-
-        await Awaitable.WaitForSecondsAsync(1f);
-        RaiseClaw();
+        _isAtTop = false;
+        _clawMachine.position = _clawMachine.position.With(y: _initialY);
+        _clawMachine.DOMoveY(_targetY, 1f)
+            .OnComplete(async () =>
+            {
+                await Awaitable.WaitForSecondsAsync(.5f);
+                if (!_clawTrigger.hasBubbles)
+                {
+                    Grab();
+                }
+                else
+                {
+                    RaiseClaw();
+                }
+            });
     }
 
-    private async void RaiseClaw()
+    private void RaiseClaw()
     {
-        while (!hasReachedTop)
-        {
-            Vector3 currentPosition = _clawMachine.position;
-            _clawMachine.position = Vector3.MoveTowards(currentPosition, currentPosition.With(y: _initialDepth),
-                Time.deltaTime);
-            await Awaitable.NextFrameAsync();
-        }
-
-        if (!_clawTrigger.hasBubbles)
-        {
-            await Awaitable.WaitForSecondsAsync(.5f);
-            Release();
-        }
+        _clawMachine.position = _clawMachine.position.With(y: _targetY);
+        _clawMachine.DOMoveY(_initialY, 1f)
+            .OnComplete(async () =>
+            {
+                if (!_clawTrigger.hasBubbles)
+                {
+                    await Awaitable.WaitForSecondsAsync(.5f);
+                    Release();
+                }
+                else
+                {
+                    _isAtTop = true;
+                }
+            });
     }
 
     public void Grab()
     {
         _isGrabbing = true;
-        _pistonBone.position = _clawFingersEnd.position;
-        _pistonBone.DOMove(_clawFingersStart.position, .5f).SetEase(Ease.OutBounce);
+        _pistonBone.DOMoveY(_clawFingersStart.position.y, .5f)
+            .SetEase(Ease.OutBounce);
+        _clawRig.weight = 1f;
+        DOTween.To(() => _clawRig.weight, x => _clawRig.weight = x, 0f, 1f)
+            .SetEase(Ease.OutBounce)
+            .OnComplete(RaiseClaw);
     }
 
     public void Release()
     {
-        _isGrabbing = false;
-        _pistonBone.position = _clawFingersStart.position;
-        _pistonBone.DOMove(_clawFingersEnd.position, .5f).SetEase(Ease.OutBounce);
+        _pistonBone.DOMoveY(_clawFingersEnd.position.y, .5f).SetEase(Ease.OutBounce);
+        _clawRig.weight = 0f;
+        _clawTrigger.ReleaseBubble();
+        DOTween.To(() => _clawRig.weight, x => _clawRig.weight = x, 1f, 1f)
+            .SetEase(Ease.OutBounce)
+            .OnComplete(() =>
+            {
+                _isAtTop = true;
+                _isGrabbing = false;
+            });
     }
 }
