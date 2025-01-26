@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7387588486282543055}
   - component: {fileID: 3375458574885948977}
   m_Layer: 0
-  m_Name: Bubble
+  m_Name: Bubble Purple
   m_TagString: Bubble
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 787eade9f0cdcc94294e0129c9dea9f9, type: 2}
+  - {fileID: 2100000, guid: 0d81b9ba46864164ead59a46a15d2e1f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -149,3 +149,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab29fb544908af4781ed6ce6c6a5c52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Type: 0

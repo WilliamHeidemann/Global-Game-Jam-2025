@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BubbleEmitter : MonoBehaviour
 {
-    public GameObject BubblePrefab;
+    public BubbleType[] BubblePrefabs;
 
     public async void SpawnBubble()
     {
@@ -25,6 +25,7 @@ public class BubbleEmitter : MonoBehaviour
     private void Spawn()
     {
         var randomPosition = new Vector3(Random.Range(-.3f, .3f), 0f, Random.Range(-.3f, .3f));
-        Instantiate(BubblePrefab, transform.position + randomPosition, Quaternion.identity);
+        var prefab = BubblePrefabs[Random.Range(0, BubblePrefabs.Length)];
+        var bubble = Instantiate(prefab, transform.position + randomPosition, Quaternion.identity);
     }
 }
