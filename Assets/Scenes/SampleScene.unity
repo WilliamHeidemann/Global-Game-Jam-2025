@@ -2245,6 +2245,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5445470472276709662, guid: 8a5b43d6f44a19e40b9258bfdb404e1d, type: 3}
+      propertyPath: soundEffects.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445470472276709662, guid: 8a5b43d6f44a19e40b9258bfdb404e1d, type: 3}
+      propertyPath: 'soundEffects.Array.data[3]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 858a496612ca79a4083323f7ab741995, type: 3}
+    - target: {fileID: 5445470472276709662, guid: 8a5b43d6f44a19e40b9258bfdb404e1d, type: 3}
+      propertyPath: 'soundEffects.Array.data[4]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 34c54864850ad1b438d6450920d34465, type: 3}
+    - target: {fileID: 5445470472276709662, guid: 8a5b43d6f44a19e40b9258bfdb404e1d, type: 3}
+      propertyPath: 'soundEffects.Array.data[5]'
+      value: 
+      objectReference: {fileID: 8300000, guid: 0dcac7c63c5a143438c9a88f022733f9, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

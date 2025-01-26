@@ -24,22 +24,23 @@ public class PointManagerScript : MonoBehaviour
         if (isTrashHole)
         {
             AddPoints(1);
+            SoundManager.instance.PlaySoundEffect(5);
             return;
         }
 
         if (bubble == hole)
         {
+            _timer.AddTime(5);
+            SoundManager.instance.PlaySoundEffect(3);
             switch (bubble)
             {
                 case BubbleTypeEnum.Yellow:
                 case BubbleTypeEnum.Green:
                     AddPoints(10);
-                    _timer.AddTime(5);
                     break;
                 case BubbleTypeEnum.Purple:
                 case BubbleTypeEnum.Orange:
                     AddPoints(15);
-                    _timer.AddTime(5);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -48,6 +49,7 @@ public class PointManagerScript : MonoBehaviour
         else
         {
             AddPoints(2);
+            SoundManager.instance.PlaySoundEffect(4);
         }
     }
 
