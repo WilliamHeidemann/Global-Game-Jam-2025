@@ -17,7 +17,7 @@ public class StickMover : MonoBehaviour
     private void Move()
     {
         var endPoint = goingForward ? Point1 : Point2;
-        transform.DOMove(endPoint.position, 2f).SetEase(Ease.InOutSine).OnComplete(() =>
+        transform.DOMove(endPoint.position, 1.5f).SetEase(Ease.InOutSine).OnComplete(() =>
         {
             goingForward = !goingForward;
             Move();
