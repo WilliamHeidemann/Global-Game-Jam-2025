@@ -76,6 +76,9 @@ public class ClawMachine : MonoBehaviour
         var value = _moveInputAction.ReadValue<Vector2>();
         Vector3 translation = new Vector3(value.x, 0, value.y) * (Time.deltaTime * _translationSpeed);
         _clawMachine.position += translation;
+        
+        _clawMachine.position = _clawMachine.position.With(x: Mathf.Clamp(_clawMachine.position.x, -1, 1), z: Mathf.Clamp(_clawMachine.position.z, 0.36f, 1.06f));
+        
 
         if (Mathf.Abs(translation.x) != 0.0f && !soundEffectSource.isPlaying)
         {
