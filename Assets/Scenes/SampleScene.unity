@@ -186,6 +186,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _clawMachine: {fileID: 813904088}
+  _carrier: {fileID: 4542673415646652539}
 --- !u!1 &179477947
 GameObject:
   m_ObjectHideFlags: 0

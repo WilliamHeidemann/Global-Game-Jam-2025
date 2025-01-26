@@ -11,12 +11,13 @@ public class ClawTrigger : MonoBehaviour
     private Option<Rigidbody> _bubble = Option<Rigidbody>.None;
     [CanBeNull] private Rigidbody _lastBubble;
     public bool hasBubbles => _bubble.IsSome(out _);
+    [SerializeField] private Transform _carrier;
 
     private void Update()
     {
         if (_bubble.IsSome(out var bubble))
         {
-            bubble.position = transform.position;
+            bubble.position = _carrier.position;
         }
     }
 
