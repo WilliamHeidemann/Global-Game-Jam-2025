@@ -55,10 +55,6 @@ public class SoundManager : MonoBehaviour
         {
             Debug.LogWarning("Background music not assigned.");
         }
-        else
-        {
-            Debug.Log("Background music is already playing.");
-        }
     }
 
     // Function to stop background music
