@@ -44,14 +44,11 @@ public class ClawMachine : MonoBehaviour
         _moveInputAction = InputSystem.actions.FindAction("Move");
         _interactInputAction = InputSystem.actions.FindAction("Jump");
 
-        // Release();
-
         _pistonBone.DOMoveY(_clawFingersEnd.position.y, .5f).SetEase(Ease.OutBounce);
     }
 
     private void Update()
     {
-        print(_isGrabbing);
         if (!_isAtTop)
         {
             return;
@@ -139,10 +136,8 @@ public class ClawMachine : MonoBehaviour
     public void Grab()
     {
         _isGrabbing = true;
-        // _pistonBone.position = _clawFingersEnd.position;
         _pistonBone.DOMoveY(_clawFingersStart.position.y, .5f)
             .SetEase(Ease.OutBounce);
-        // .OnComplete(RaiseClaw);
         _clawRig.weight = 1f;
         DOTween.To(() => _clawRig.weight, x => _clawRig.weight = x, 0f, 1f)
             .SetEase(Ease.OutBounce)
@@ -151,15 +146,7 @@ public class ClawMachine : MonoBehaviour
 
     public void Release()
     {
-        // _pistonBone.position = _clawFingersStart.position;
-        // _clawTrigger.ReleaseBubble();
         _pistonBone.DOMoveY(_clawFingersEnd.position.y, .5f).SetEase(Ease.OutBounce);
-            // .OnComplete(() =>
-            // {
-            //     _isAtTop = true;
-            //     _isGrabbing = false;
-            // });
-
         _clawRig.weight = 0f;
         _clawTrigger.ReleaseBubble();
         DOTween.To(() => _clawRig.weight, x => _clawRig.weight = x, 1f, 1f)

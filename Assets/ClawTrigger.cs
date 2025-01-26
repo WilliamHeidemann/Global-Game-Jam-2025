@@ -32,7 +32,6 @@ public class ClawTrigger : MonoBehaviour
             rigidBody.transform.position = transform.position;
             _bubble = Option<Rigidbody>.Some(rigidBody);
             _clawMachine.Grab();
-            print("Picked up bubble");
         }
     }
 
