@@ -11,6 +11,7 @@ public class SoundManager : MonoBehaviour
 
     [Header("Audio Sources")]
     public AudioSource soundEffectSource;
+    public AudioSource clawMovementSource;
     public AudioSource musicSource;
 
     private void Awake()
@@ -39,6 +40,15 @@ public class SoundManager : MonoBehaviour
         {
             soundEffectSource.pitch = Random.Range(0.6f, 0.8f);
             soundEffectSource.PlayOneShot(soundEffects[soundIndex]);
+        }
+    }
+    
+    public void PlayClawMovementSound(int soundIndex)
+    {
+        if (soundIndex >= 0 && soundIndex < soundEffects.Length)
+        {
+            clawMovementSource.pitch = Random.Range(0.6f, 0.8f);
+            clawMovementSource.PlayOneShot(soundEffects[soundIndex]);
         }
     }
 
